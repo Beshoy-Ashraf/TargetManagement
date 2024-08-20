@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "583984292974",
+    "project_id": "targetmanagement-8103c",
+    "storage_bucket": "targetmanagement-8103c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583984292974:android:566124408e448c56b1f27f",
+        "android_client_info": {
+          "package_name": "com.example.target_manangment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATxpOoET8QlWWYwfNhNzIfbtP_uOYPRc4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
