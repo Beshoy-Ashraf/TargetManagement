@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:target_manangment/layout/HomeLayout.dart';
+import 'package:target_manangment/layout/cubit/AppCubit.dart';
+import 'package:target_manangment/modules/LogInScreen/LogInScreen.dart';
 import 'package:target_manangment/modules/SignInScreen/SignInScreen.dart';
 import 'package:target_manangment/shared/constant/constant.dart';
 import 'package:target_manangment/shared/cubit/appcubit.dart';
@@ -39,17 +42,17 @@ class MyApp extends StatelessWidget {
           create: (BuildContext context) =>
               appcubit()..changeAppMode(fromsherd: isDark),
         ),
+        BlocProvider(create: (BuildContext context) => Appcubit()),
       ],
       child: BlocConsumer<appcubit, appcubistate>(
         listener: (context, state) {},
         builder: (context, state) {
-          var cubit = appcubit.get(context);
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: lightTheme,
             darkTheme: darkTheme,
             themeMode: ThemeMode.light,
-            home: SignIn(),
+            home: HomeLayout(),
           );
         },
       ),

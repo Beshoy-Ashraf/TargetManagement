@@ -32,7 +32,6 @@ Widget defualtTextinput({
   required TextEditingController controller,
   required TextInputType Type,
   required String label,
-  required Function onchange,
   IconData? prefixIcon,
   IconData? suffixIcon,
   required String? Function(dynamic value) validate,
@@ -40,7 +39,6 @@ Widget defualtTextinput({
   required bool password,
 }) =>
     TextFormField(
-      onChanged: (value) => onchange(value),
       controller: controller,
       keyboardType: Type,
       obscureText: password,

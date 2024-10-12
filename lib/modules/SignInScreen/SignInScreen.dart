@@ -1,8 +1,8 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:target_manangment/layout/HomeLayout.dart';
+import 'package:target_manangment/modules/LogInScreen/LogInScreen.dart';
 import 'package:target_manangment/modules/SignInScreen/SignInCubit/SignInCubit.dart';
 import 'package:target_manangment/modules/SignInScreen/SignInCubit/SignInStates.dart';
 import 'package:target_manangment/shared/components/components.dart';
@@ -67,7 +67,6 @@ class SignIn extends StatelessWidget {
                                 ? 'Email must not be empty'
                                 : null,
                             Type: TextInputType.emailAddress,
-                            onchange: (value) {},
                             label: 'Email',
                             prefixIcon: Icons.email,
                           ),
@@ -81,7 +80,6 @@ class SignIn extends StatelessWidget {
                                 ? 'Phone must not be empty'
                                 : null,
                             Type: TextInputType.emailAddress,
-                            onchange: (value) {},
                             label: 'Phone',
                             prefixIcon: Icons.phone,
                           ),
@@ -95,9 +93,6 @@ class SignIn extends StatelessWidget {
                                 ? 'username must not be empty'
                                 : null,
                             Type: TextInputType.emailAddress,
-                            onchange: (value) {
-                              print(value.toString());
-                            },
                             label: 'username',
                             prefixIcon: Icons.location_city,
                           ),
@@ -111,9 +106,6 @@ class SignIn extends StatelessWidget {
                                 ? 'Password must not be empty'
                                 : null,
                             Type: TextInputType.visiblePassword,
-                            onchange: (value) {
-                              print(value.toString());
-                            },
                             label: 'Password',
                             prefixIcon: Icons.lock,
                             suffixIcon: SignInCubit.get(context).Suffix,
@@ -153,7 +145,7 @@ class SignIn extends StatelessWidget {
                               Text('do you have account??'),
                               TextButton(
                                   onPressed: () {
-                                    // navigateAndFinish(context, SocialLogin());
+                                    navigateAndFinish(context, Login());
                                   },
                                   child: Text('LogIn')),
                             ],
