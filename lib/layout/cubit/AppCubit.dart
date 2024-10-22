@@ -1,6 +1,9 @@
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart';
@@ -8,12 +11,10 @@ import 'package:sqflite/sqflite.dart';
 import 'package:target_manangment/layout/cubit/AppStates.dart';
 import 'package:target_manangment/models/datamodel.dart';
 import 'package:target_manangment/models/initialModel.dart';
+import 'package:target_manangment/models/knowladgemodel.dart';
 import 'package:target_manangment/models/total.dart';
-import 'package:target_manangment/modules/Achievement/Achievement.dart';
-import 'package:target_manangment/modules/KPI&Award/KPI&Award.dart';
-import 'package:target_manangment/modules/Setting/Setting.dart';
-import 'package:target_manangment/modules/knowledge/knowledge.dart';
 import 'package:target_manangment/shared/constant/constant.dart';
+import 'package:file_picker/file_picker.dart';
 
 class Appcubit extends Cubit<AppStates> {
   Appcubit() : super(AppInitialState());
@@ -214,9 +215,9 @@ class Appcubit extends Cubit<AppStates> {
     required int dsl,
     required int dslper,
     required int home4g,
-    required int home4gper,
+    required double home4gper,
     required int devices,
-    required int devicesper,
+    required double devicesper,
   }) {
     initialTarget instarget = initialTarget(
       point: point,
@@ -491,5 +492,114 @@ class Appcubit extends Cubit<AppStates> {
       print('Error calculating total points: $error');
       return 0;
     }
+  }
+
+  FilePickerResult? result;
+  Future<void> pickPDF() async {
+    result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+    emit(Addimage());
+  }
+
+  String? pdfurl;
+
+  Future<void> uploadPDF() async {
+    // Step 1: Pick the file
+
+    if (result != null) {
+      // Step 2: Get the file and create a Firebase reference
+      File file = File(result!.files.single.path!);
+      FirebaseStorage storage = FirebaseStorage.instance;
+      Reference ref =
+          storage.ref().child('uploads/${result!.files.single.name}');
+
+      // Step 3: Upload the file
+      UploadTask uploadTask = ref.putFile(file);
+
+      // Step 4: Monitor the upload progress
+      uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+        double progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        print('Upload is $progress% complete.');
+      });
+
+      // Step 5: Get the download URL once the upload is complete
+      await uploadTask.whenComplete(() async {
+        String downloadURL = await ref.getDownloadURL();
+        pdfurl = downloadURL;
+        print('File uploaded. Download URL: $downloadURL');
+      });
+    } else {
+      // User canceled the picker
+      print('No file selected.');
+    }
+  }
+
+  void addinformation({
+    required String title,
+    required String description,
+  }) async {
+    try {
+      await uploadPDF();
+
+      await FirebaseFirestore.instance.collection('information').add({
+        'title': title,
+        'description': description,
+        'pdf': await pdfurl,
+      });
+      emit(AddInformationSuccessful());
+    } catch (error) {
+      print('Error adding information: $error');
+      emit(AddInformationError());
+    }
+  }
+
+  void addkpi({
+    required String title,
+    required String description,
+  }) async {
+    try {
+      await uploadPDF();
+
+      await FirebaseFirestore.instance.collection('KPI').add({
+        'title': title,
+        'description': description,
+        'pdf': await pdfurl,
+      });
+      emit(AddInformationSuccessful());
+    } catch (error) {
+      print('Error adding kpi: $error');
+      emit(AddInformationError());
+    }
+  }
+
+  List<Knowladgemodel> knowladge = [];
+  void getknowladge() {
+    knowladge = [];
+    FirebaseFirestore.instance.collection('information').get().then((value) {
+      value.docs.forEach((element) {
+        knowladge.add(Knowladgemodel.fromMap(element.data()));
+      });
+      emit(GetKnowlageSuccessfully());
+    }).catchError((error) {
+      emit(GetKnowlageError());
+    });
+  }
+
+  List<Knowladgemodel> kpi = [];
+  void getkpi() {
+    kpi = [];
+    FirebaseFirestore.instance.collection('KPI').get().then((value) {
+      value.docs.forEach((element) {
+        kpi.add(Knowladgemodel.fromMap(element.data()));
+      });
+      print(kpi[0]);
+      emit(GetkpiSuccessfully());
+    }).catchError((error) {
+      print(error);
+      emit(GetkpiError());
+    });
   }
 }

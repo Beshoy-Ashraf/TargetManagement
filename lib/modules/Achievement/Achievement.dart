@@ -27,8 +27,8 @@ class Achievement extends StatelessWidget {
     int OCKpi = initAch.orangeCashper;
     int DSLKpi = initAch.adslper;
     int GAKpi = initAch.GAper;
-    int DevicesKpi = initAch.devicesper;
-    int Home4GKpi = initAch.home4gper;
+    double DevicesKpi = initAch.devicesper;
+    double Home4GKpi = initAch.home4gper;
     int point = initAch.point;
     int GA = initAch.GA;
     int OC = initAch.orangeCash;
@@ -46,12 +46,17 @@ class Achievement extends StatelessWidget {
     GAper = (GA != 0) ? ((totalGA * 100 / GA).toInt()) : 0;
     OCper = (OC != 0) ? ((totalOC * 100 / OC).toInt()) : 0;
     OCKpi = (OCper * OCKpi / 100).toInt();
-    DSLper = (DSL != 0) ? ((totalDsl * 100 / DSL).toInt()) : 0;
-    DSLKpi = (DSLper * DSLKpi / 100).toInt();
+    DSLper = (DSL != 0)
+        ? ((totalDsl * 100 / DSL).toInt())
+        : (totalDsl * 100).toInt();
+    DSLKpi = (GA != 0) ? (DSLper * DSLKpi / 100).toInt() : 0;
     Devicesper = (Devices != 0) ? ((totalDevices * 100 / Devices).toInt()) : 0;
-    DevicesKpi = (Devicesper * DevicesKpi / 100).toInt();
+    DevicesKpi = (Devicesper * DevicesKpi / 100).toInt() > 5
+        ? 5
+        : (Devicesper * DevicesKpi / 100);
     Home4Gper = (Home4G != 0) ? ((totalHome4G * 100 / Home4G).toInt()) : 0;
-    Home4GKpi = (Home4Gper * Home4GKpi / 100).toInt();
+    Home4GKpi = (Home4Gper * Home4GKpi / 100).toDouble();
+    double totalKpi = pointKpi + OCKpi + DSLKpi + DevicesKpi + Home4GKpi;
     return BlocConsumer<Appcubit, AppStates>(
       listener: (context, state) {},
       builder: (context, state) {
@@ -62,10 +67,13 @@ class Achievement extends StatelessWidget {
               child: Center(
                 child: Column(
                   children: [
+                    // Card 1: Points
                     Card(
-                      color: Theme.of(context).cardTheme.color,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      color: Colors.white,
                       elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Container(
@@ -73,48 +81,49 @@ class Achievement extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: double.infinity,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'point',
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  ],
+                              Text(
+                                'Points',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange[800],
                                 ),
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
+                              SizedBox(height: 10),
                               LinearProgressIndicator(
                                 value: pointper / 100,
+                                backgroundColor: Colors.orange[100],
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.orange),
                               ),
-                              Center(child: Text('${(pointper).toString()}%')),
-                              Text('remain : ${((100 - pointper)).toInt()} % '),
-                              SizedBox(
-                                width: 5,
-                              ),
+                              SizedBox(height: 10),
+                              Center(
+                                  child: Text('${(pointper).toString()}%',
+                                      style: TextStyle(fontSize: 16))),
                               Text(
-                                  'remain : ${(point - totalPoints)} points  '),
-                              SizedBox(
-                                width: 5,
+                                'Remaining: ${((100 - pointper)).toInt()}%',
+                                style: TextStyle(color: Colors.grey[600]),
                               ),
-                              Text('achieve : ${(totalPoints)} points'),
+                              Text('Remaining: ${(point - totalPoints)} points',
+                                  style: TextStyle(color: Colors.grey[600])),
+                              Text('Achieved: ${(totalPoints)} points',
+                                  style: TextStyle(color: Colors.grey[600])),
+                              Text('KPI growth: ${(pointKpi)}%',
+                                  style: TextStyle(color: Colors.grey[600])),
                             ],
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: 20),
+
+                    // Card 2: Lines
                     Card(
-                      color: Theme.of(context).cardTheme.color,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      color: Colors.white,
                       elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Container(
@@ -122,47 +131,49 @@ class Achievement extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: double.infinity,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'lines',
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  ],
+                              Text(
+                                'Lines',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange[800],
                                 ),
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
+                              SizedBox(height: 10),
                               LinearProgressIndicator(
                                 value: GAper / 100,
+                                backgroundColor: Colors.orange[100],
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.orange),
                               ),
-                              Center(child: Text('${(GAper).toString()}%')),
-                              Text('remain : ${((100 - GAper)).toInt()} % '),
-                              SizedBox(
-                                width: 5,
+                              SizedBox(height: 10),
+                              Center(
+                                  child: Text('${(GAper).toString()}%',
+                                      style: TextStyle(fontSize: 16))),
+                              Text(
+                                'Remaining: ${((100 - GAper)).toInt()}%',
+                                style: TextStyle(color: Colors.grey[600]),
                               ),
-                              Text('remain : ${(GA - totalGA)} lines  '),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text('achieve : ${(totalGA)} liens'),
+                              Text('Remaining: ${(GA - totalGA)} lines',
+                                  style: TextStyle(color: Colors.grey[600])),
+                              Text('Achieved: ${(totalGA)} lines',
+                                  style: TextStyle(color: Colors.grey[600])),
+                              Text('KPI growth: ${(GAKpi)}%',
+                                  style: TextStyle(color: Colors.grey[600])),
                             ],
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: 20),
+
+                    // Card 3: Orange Cash
                     Card(
-                      color: Theme.of(context).cardTheme.color,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      color: Colors.white,
                       elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Container(
@@ -170,47 +181,49 @@ class Achievement extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: double.infinity,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'Orange Cash',
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  ],
+                              Text(
+                                'Orange Cash',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange[800],
                                 ),
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
+                              SizedBox(height: 10),
                               LinearProgressIndicator(
                                 value: OCper / 100,
+                                backgroundColor: Colors.orange[100],
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.orange),
                               ),
-                              Center(child: Text('${(OCper).toString()}%')),
-                              Text('remain : ${((100 - OCper)).toInt()} % '),
-                              SizedBox(
-                                width: 5,
+                              SizedBox(height: 10),
+                              Center(
+                                  child: Text('${(OCper).toString()}%',
+                                      style: TextStyle(fontSize: 16))),
+                              Text(
+                                'Remaining: ${((100 - OCper)).toInt()}%',
+                                style: TextStyle(color: Colors.grey[600]),
                               ),
-                              Text('remain : ${(OC - totalOC)} walets  '),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text('achieve : ${(totalOC)} walets'),
+                              Text('Remaining: ${(OC - totalOC)} wallets',
+                                  style: TextStyle(color: Colors.grey[600])),
+                              Text('Achieved: ${(totalOC)} wallets',
+                                  style: TextStyle(color: Colors.grey[600])),
+                              Text('KPI growth: ${(OCKpi)}%',
+                                  style: TextStyle(color: Colors.grey[600])),
                             ],
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: 20),
+
+                    // Card 4: Home 4G
                     Card(
-                      color: Theme.of(context).cardTheme.color,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      color: Colors.white,
                       elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Container(
@@ -218,49 +231,50 @@ class Achievement extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: double.infinity,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'Home 4G',
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  ],
+                              Text(
+                                'Home 4G',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange[800],
                                 ),
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
+                              SizedBox(height: 10),
                               LinearProgressIndicator(
                                 value: Home4Gper / 100,
+                                backgroundColor: Colors.orange[100],
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.orange),
                               ),
-                              Center(child: Text('${(Home4Gper).toString()}%')),
+                              SizedBox(height: 10),
+                              Center(
+                                  child: Text('${(Home4Gper).toString()}%',
+                                      style: TextStyle(fontSize: 16))),
                               Text(
-                                  'remain : ${((100 - Home4Gper)).toInt()} % '),
-                              SizedBox(
-                                width: 5,
+                                'Remaining: ${((100 - Home4Gper)).toInt()}%',
+                                style: TextStyle(color: Colors.grey[600]),
                               ),
                               Text(
-                                  'remain : ${(Home4G - totalHome4G)} Home 4G  '),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text('achieve : ${(totalHome4G)} Home 4G'),
+                                  'Remaining: ${(Home4G - totalHome4G)} Home 4G',
+                                  style: TextStyle(color: Colors.grey[600])),
+                              Text('Achieved: ${(totalHome4G)} Home 4G',
+                                  style: TextStyle(color: Colors.grey[600])),
+                              Text('KPI growth: ${(Home4GKpi)}%',
+                                  style: TextStyle(color: Colors.grey[600])),
                             ],
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: 20),
+
+                    // Card 5: DSL
                     Card(
-                      color: Theme.of(context).cardTheme.color,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      color: Colors.white,
                       elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Container(
@@ -268,48 +282,49 @@ class Achievement extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: double.infinity,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'DSL',
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  ],
+                              Text(
+                                'DSL',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange[800],
                                 ),
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
+                              SizedBox(height: 10),
                               LinearProgressIndicator(
                                 value: DSLper / 100,
+                                backgroundColor: Colors.orange[100],
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.orange),
                               ),
-                              Center(child: Text('${(DSLper).toString()}%')),
-                              Text('remain : ${((100 - DSLper)).toInt()} % '),
-                              SizedBox(
-                                width: 5,
-                              ),
+                              SizedBox(height: 10),
+                              Center(
+                                  child: Text('${(DSLper).toString()}%',
+                                      style: TextStyle(fontSize: 16))),
                               Text(
-                                  'remain : ${((DSL - totalDsl) < 0 ? 0 : (DSL - totalDsl))} DSL  '),
-                              SizedBox(
-                                width: 5,
+                                'Remaining: ${((100 - DSLper)).toInt()}%',
+                                style: TextStyle(color: Colors.grey[600]),
                               ),
-                              Text('achieve : ${(totalDsl)} DSL'),
+                              Text('Remaining: ${(DSL - totalDsl)} DSL lines',
+                                  style: TextStyle(color: Colors.grey[600])),
+                              Text('Achieved: ${(totalDsl)} DSL lines',
+                                  style: TextStyle(color: Colors.grey[600])),
+                              Text('KPI growth: ${(DSLKpi)}%',
+                                  style: TextStyle(color: Colors.grey[600])),
                             ],
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    SizedBox(height: 20),
+
+                    // Card 6: Devices
                     Card(
-                      color: Theme.of(context).cardTheme.color,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      color: Colors.white,
                       elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Container(
@@ -317,45 +332,88 @@ class Achievement extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: double.infinity,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'Devices',
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  ],
+                              Text(
+                                'Devices',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange[800],
                                 ),
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
+                              SizedBox(height: 10),
                               LinearProgressIndicator(
                                 value: Devicesper / 100,
+                                backgroundColor: Colors.orange[100],
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.orange),
                               ),
+                              SizedBox(height: 10),
                               Center(
-                                  child: Text('${(Devicesper).toString()}%')),
+                                  child: Text('${(Devicesper).toString()}%',
+                                      style: TextStyle(fontSize: 16))),
                               Text(
-                                  'remain : ${((100 - Devicesper)).toInt()} % '),
-                              SizedBox(
-                                width: 5,
+                                'Remaining: ${((100 - Devicesper)).toInt()}%',
+                                style: TextStyle(color: Colors.grey[600]),
                               ),
                               Text(
-                                  'remain : ${(Devices - totalDevices)} Devices  '),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text('achieve : ${(totalDevices)} Devices'),
+                                  'Remaining: ${(Devices - totalDevices)} devices',
+                                  style: TextStyle(color: Colors.grey[600])),
+                              Text('Achieved: ${(totalDevices)} devices',
+                                  style: TextStyle(color: Colors.grey[600])),
+                              Text('KPI growth: ${(DevicesKpi)}%',
+                                  style: TextStyle(color: Colors.grey[600])),
                             ],
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
+                    SizedBox(height: 20),
+
+                    // Card 7: Total KPI
+                    Card(
+                      color: Colors.white,
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Container(
+                          width: double.infinity,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Total KPI',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange[800],
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              LinearProgressIndicator(
+                                value: totalKpi / 100,
+                                backgroundColor: Colors.orange[100],
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.orange),
+                              ),
+                              SizedBox(height: 10),
+                              Center(
+                                  child: Text('${(totalKpi).toString()}%',
+                                      style: TextStyle(fontSize: 16))),
+                              Text(
+                                'Remaining: ${((100 - totalKpi)).toInt()}%',
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                              Text('Achieved: ${(totalKpi)}%',
+                                  style: TextStyle(color: Colors.grey[600])),
+                              Text('Target growth: ${(totalKpi)}%',
+                                  style: TextStyle(color: Colors.grey[600])),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),

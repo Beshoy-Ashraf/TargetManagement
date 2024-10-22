@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:target_manangment/modules/EditTarget/EditTarget.dart';
 import 'package:target_manangment/modules/InitialTarget/InitialTarger.dart';
+import 'package:target_manangment/modules/KpiAndAword/KpiAndAword.dart';
+import 'package:target_manangment/modules/newInformation/newInformation.dart';
 import 'package:target_manangment/shared/components/components.dart';
 
 class Setting extends StatelessWidget {
@@ -80,6 +82,96 @@ class Setting extends StatelessWidget {
                                 children: [
                                   Text(
                                     'edit',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  Spacer(),
+                                  Icon(Icons.forward_outlined)
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            InkWell(
+              onTap: () {
+                navigateTo(context, NewInformation());
+              },
+              child: Card(
+                color: Theme.of(context).cardTheme.color,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                elevation: 10,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Container(
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    'Add new information',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  Spacer(),
+                                  Icon(Icons.forward_outlined)
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            InkWell(
+              onTap: () {
+                navigateTo(context, KPI());
+              },
+              child: Card(
+                color: Theme.of(context).cardTheme.color,
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                elevation: 10,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Container(
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    'KPIs & Awards',
                                     style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w700),

@@ -34,215 +34,76 @@ class InitialTarget extends StatelessWidget {
               child: Form(
                 key: FormKey,
                 child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Align items to the left
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: defualtTextinput(
-                              controller: Point,
-                              Type: TextInputType.number,
-                              label: 'Point',
-                              validate: (value) => value!.isEmpty
-                                  ? 'Point quantity is required'
-                                  : null,
-                              password: false),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: defualtTextinput(
-                              controller: PointPercent,
-                              Type: TextInputType.number,
-                              label: 'Point',
-                              suffixIcon: Icons.percent,
-                              validate: (value) => value!.isEmpty
-                                  ? 'Point percent is required'
-                                  : null,
-                              password: false),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: defualtTextinput(
-                              controller: GA,
-                              Type: TextInputType.number,
-                              label: 'GA',
-                              validate: (value) => value!.isEmpty
-                                  ? 'GA quantity is required'
-                                  : null,
-                              password: false),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: defualtTextinput(
-                              controller: GAPercent,
-                              Type: TextInputType.number,
-                              label: 'GA',
-                              suffixIcon: Icons.percent,
-                              validate: (value) => value!.isEmpty
-                                  ? 'GA percent is required'
-                                  : null,
-                              password: false),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: defualtTextinput(
-                              controller: DSL,
-                              Type: TextInputType.number,
-                              label: 'DSL',
-                              validate: (value) => value!.isEmpty
-                                  ? 'DSL quantity is required'
-                                  : null,
-                              password: false),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: defualtTextinput(
-                              controller: DSLPercent,
-                              Type: TextInputType.number,
-                              label: 'DSL',
-                              suffixIcon: Icons.percent,
-                              validate: (value) => value!.isEmpty
-                                  ? 'DSL percent is required'
-                                  : null,
-                              password: false),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: defualtTextinput(
-                              controller: HOME4G,
-                              Type: TextInputType.number,
-                              label: 'HOME 4G',
-                              validate: (value) => value!.isEmpty
-                                  ? 'Home 4G quantity is required'
-                                  : null,
-                              password: false),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: defualtTextinput(
-                              controller: Home4GPercent,
-                              Type: TextInputType.number,
-                              label: 'Home 4G',
-                              suffixIcon: Icons.percent,
-                              validate: (value) => value!.isEmpty
-                                  ? 'Home 4G percent is required'
-                                  : null,
-                              password: false),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: defualtTextinput(
-                              controller: OC,
-                              Type: TextInputType.number,
-                              label: 'OC',
-                              validate: (value) => value!.isEmpty
-                                  ? 'OC quantity is required'
-                                  : null,
-                              password: false),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: defualtTextinput(
-                              controller: OCPercent,
-                              Type: TextInputType.number,
-                              label: 'OC',
-                              suffixIcon: Icons.percent,
-                              validate: (value) => value!.isEmpty
-                                  ? 'OC percent is required'
-                                  : null,
-                              password: false),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: defualtTextinput(
-                              controller: Devices,
-                              Type: TextInputType.number,
-                              label: 'Devices',
-                              validate: (value) => value.isEmpty
-                                  ? 'Devices quantity is required'
-                                  : null,
-                              password: false),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: defualtTextinput(
-                              controller: DevicesPercent,
-                              Type: TextInputType.number,
-                              label: 'Devices',
-                              suffixIcon: Icons.percent,
-                              validate: (value) => value!.isEmpty
-                                  ? 'devices percent is required'
-                                  : null,
-                              password: false),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
+                    _buildRowInput(
+                        Point,
+                        PointPercent,
+                        'Points',
+                        'Point quantity is required',
+                        'Point percent is required'),
+                    SizedBox(height: 20),
+                    _buildRowInput(GA, GAPercent, 'GA',
+                        'GA quantity is required', 'GA percent is required'),
+                    SizedBox(height: 20),
+                    _buildRowInput(DSL, DSLPercent, 'DSL',
+                        'DSL quantity is required', 'DSL percent is required'),
+                    SizedBox(height: 20),
+                    _buildRowInput(
+                        HOME4G,
+                        Home4GPercent,
+                        'HOME 4G',
+                        'Home 4G quantity is required',
+                        'Home 4G percent is required'),
+                    SizedBox(height: 20),
+                    _buildRowInput(OC, OCPercent, 'OC',
+                        'OC quantity is required', 'OC percent is required'),
+                    SizedBox(height: 20),
+                    _buildRowInput(
+                        Devices,
+                        DevicesPercent,
+                        'Devices',
+                        'Devices quantity is required',
+                        'Devices percent is required'),
+                    SizedBox(height: 30),
+
+                    // Submit button
                     Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
-                          color: Colors.orange[200],
-                          border: Border.all(color: Colors.orange, width: 1),
-                          borderRadius: BorderRadius.circular(15)),
+                        gradient: LinearGradient(
+                          colors: [Colors.orange[300]!, Colors.orange[500]!],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.orange.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
                       child: MaterialButton(
                         onPressed: () {
                           if (FormKey.currentState!.validate()) {
                             Appcubit.get(context).setInatioalTarget(
-                                point: int.parse(Point.text),
-                                GA: int.parse(GA.text),
-                                oc: int.parse(OC.text),
-                                dsl: int.parse(DSL.text),
-                                home4g: int.parse(HOME4G.text),
-                                devices: int.parse(Devices.text),
-                                pointper: int.parse(PointPercent.text),
-                                GAper: int.parse(GAPercent.text),
-                                ocper: int.parse(OCPercent.text),
-                                dslper: int.parse(DSLPercent.text),
-                                home4gper: int.parse(Home4GPercent.text),
-                                devicesper: int.parse(DevicesPercent.text));
+                              point: int.parse(Point.text),
+                              GA: int.parse(GA.text),
+                              oc: int.parse(OC.text),
+                              dsl: int.parse(DSL.text),
+                              home4g: int.parse(HOME4G.text),
+                              devices: int.parse(Devices.text),
+                              pointper: int.parse(PointPercent.text),
+                              GAper: int.parse(GAPercent.text),
+                              ocper: int.parse(OCPercent.text),
+                              dslper: int.parse(DSLPercent.text),
+                              home4gper: double.parse(Home4GPercent.text),
+                              devicesper: double.parse(DevicesPercent.text),
+                            );
                             navigateAndFinish(context, HomeLayout());
                           } else {
                             print('Not Valid');
@@ -251,17 +112,77 @@ class InitialTarget extends StatelessWidget {
                         child: Text(
                           'Submit',
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
             ),
           ),
         );
+
+// Helper function to create input rows
       },
+    );
+  }
+
+  Widget _buildRowInput(
+      TextEditingController controller1,
+      TextEditingController controller2,
+      String label,
+      String errorText1,
+      String errorText2) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildInputField(controller1, label, errorText1),
+        ),
+        SizedBox(width: 10),
+        Expanded(
+          child: _buildInputField(controller2, label, errorText2,
+              suffixIcon: Icons.percent),
+        ),
+      ],
+    );
+  }
+
+// Custom function to build input fields
+  Widget _buildInputField(
+      TextEditingController controller, String label, String errorText,
+      {IconData? suffixIcon}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.orange, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        validator: (value) => value!.isEmpty ? errorText : null,
+        decoration: InputDecoration(
+          labelText: label,
+          border: InputBorder.none,
+          suffixIcon: suffixIcon != null
+              ? Icon(suffixIcon, color: Colors.orange)
+              : null,
+          contentPadding: EdgeInsets.all(15),
+          labelStyle: TextStyle(color: Colors.orange),
+        ),
+      ),
     );
   }
 }

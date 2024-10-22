@@ -36,122 +36,117 @@ class EditDay extends StatelessWidget {
     var FormKey = GlobalKey<FormState>();
 
     return BlocConsumer<Appcubit, AppStates>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        return Scaffold(
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 90, left: 20, right: 20),
-              child: Form(
-                key: FormKey,
-                child: Column(
-                  children: [
-                    defualtTextinput(
-                        controller: Point,
-                        Type: TextInputType.number,
-                        label: 'Entered points : $points_d',
-                        validate: (value) =>
-                            value!.isEmpty ? 'points is required' : null,
-                        password: false),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    defualtTextinput(
-                        controller: GA,
-                        Type: TextInputType.number,
-                        label: 'Entered GA :$GA_d',
-                        validate: (value) =>
-                            value!.isEmpty ? 'GA quantity is required' : null,
-                        password: false),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    defualtTextinput(
-                        controller: OC,
-                        Type: TextInputType.number,
-                        label: 'Entered wallets : $OC_d',
-                        validate: (value) =>
-                            value!.isEmpty ? 'OC quantity is required' : null,
-                        password: false),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    defualtTextinput(
-                        controller: DSL,
-                        Type: TextInputType.number,
-                        label: 'Entered DSL : $DSL_d',
-                        validate: (value) =>
-                            value!.isEmpty ? 'Dsl quantity is required' : null,
-                        password: false),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    defualtTextinput(
-                        controller: HOME4G,
-                        Type: TextInputType.number,
-                        label: 'Entered Home 4G : $HOME4G_d',
-                        validate: (value) => value!.isEmpty
-                            ? 'Home 4G quantity is required'
-                            : null,
-                        password: false),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    defualtTextinput(
-                        controller: Devices,
-                        Type: TextInputType.number,
-                        label: 'Entered Devices : $Device_d',
-                        validate: (value) => value!.isEmpty
-                            ? 'Devices quantity is required'
-                            : null,
-                        password: false),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: Colors.orange[200],
+        listener: (context, state) {},
+        builder: (context, state) {
+          return Scaffold(
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 90, left: 20, right: 20),
+                child: Form(
+                  key: FormKey,
+                  child: Column(
+                    children: [
+                      // Input fields
+                      _buildInputField(Point, 'Entered points: $points_d',
+                          'points is required'),
+                      SizedBox(height: 20),
+                      _buildInputField(
+                          GA, 'Entered GA: $GA_d', 'GA quantity is required'),
+                      SizedBox(height: 20),
+                      _buildInputField(OC, 'Entered wallets: $OC_d',
+                          'OC quantity is required'),
+                      SizedBox(height: 20),
+                      _buildInputField(DSL, 'Entered DSL: $DSL_d',
+                          'DSL quantity is required'),
+                      SizedBox(height: 20),
+                      _buildInputField(HOME4G, 'Entered Home 4G: $HOME4G_d',
+                          'Home 4G quantity is required'),
+                      SizedBox(height: 20),
+                      _buildInputField(Devices, 'Entered Devices: $Device_d',
+                          'Devices quantity is required'),
+                      SizedBox(height: 30),
+
+                      // Submit button
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.orange[300],
                           border: Border.all(color: Colors.orange, width: 1),
-                          borderRadius: BorderRadius.circular(15)),
-                      child: MaterialButton(
-                        onPressed: () {
-                          if (FormKey.currentState!.validate()) {
-                            // Appcubit.get(context).updateData(
-                            //     target.day,
-                            //     int.parse(Point.text),
-                            //     int.parse(GA.text),
-                            //     int.parse(OC.text),
-                            //     int.parse(DSL.text),
-                            //     int.parse(HOME4G.text),
-                            //     int.parse(Devices.text));
-                            Appcubit.get(context).UpdateUserData(
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: MaterialButton(
+                          onPressed: () {
+                            if (FormKey.currentState!.validate()) {
+                              Appcubit.get(context).UpdateUserData(
                                 day: day,
                                 point: int.parse(Point.text),
                                 GA: int.parse(GA.text),
                                 oc: int.parse(OC.text),
                                 dsl: int.parse(DSL.text),
                                 home4g: int.parse(HOME4G.text),
-                                devices: int.parse(Devices.text));
-                            navigateAndFinish(context, EditTarget());
-                          } else {
-                            print('Not Valid');
-                          }
-                        },
-                        child: Text(
-                          'Submit',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                                devices: int.parse(Devices.text),
+                              );
+                              navigateAndFinish(context, EditTarget());
+                            } else {
+                              print('Not Valid');
+                            }
+                          },
+                          child: Text(
+                            'Submit',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
-                    )
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
+          );
+
+// Custom function to build input fields
+        });
+  }
+
+  Widget _buildInputField(
+      TextEditingController controller, String label, String errorText) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.orange, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 2),
           ),
-        );
-      },
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        validator: (value) => value!.isEmpty ? errorText : null,
+        decoration: InputDecoration(
+          labelText: label,
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.all(15),
+          labelStyle: TextStyle(color: Colors.orange),
+        ),
+      ),
     );
   }
 }

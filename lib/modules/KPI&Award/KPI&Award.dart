@@ -1,48 +1,58 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
+import 'package:target_manangment/layout/cubit/AppCubit.dart';
+import 'package:target_manangment/layout/cubit/AppStates.dart';
 
-class KPIAndAward extends StatefulWidget {
-  const KPIAndAward({super.key});
-
-  @override
-  State<KPIAndAward> createState() => _KPIAndAwardState();
-}
-
-class _KPIAndAwardState extends State<KPIAndAward> {
+class KPIAndAward extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double progress = 0;
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
-        child: Container(
-          width: double.infinity,
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.separated(
-                  itemBuilder: (context, index) {
-                    return itemBild(
-                        context: context,
-                        progress: progress,
-                        title: 'Kpi ',
-                        subtitle:
-                            'modifay the kpi to be more clear and easy to understand',
-                        url:
-                            'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf');
-                  },
-                  separatorBuilder: (context, index) {
-                    return SizedBox(
-                      height: 10,
-                    );
-                  },
-                  itemCount: 5,
+    return BlocConsumer<Appcubit, AppStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Scaffold(
+          body: ConditionalBuilder(
+            condition: Appcubit.get(context).kpi.isNotEmpty,
+            builder: (context) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
+                child: Container(
+                  width: double.infinity,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ListView.separated(
+                          itemBuilder: (context, index) {
+                            return itemBild(
+                                context: context,
+                                progress: progress,
+                                title: Appcubit.get(context).kpi[index].title,
+                                subtitle: Appcubit.get(context)
+                                    .kpi[index]
+                                    .description,
+                                url: Appcubit.get(context).kpi[index].pdf);
+                          },
+                          separatorBuilder: (context, index) {
+                            return SizedBox(
+                              height: 10,
+                            );
+                          },
+                          itemCount: Appcubit.get(context).kpi.length,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              )
-            ],
+              );
+            },
+            fallback: (context) {
+              return Center(child: CircularProgressIndicator());
+            },
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -54,7 +64,6 @@ class _KPIAndAwardState extends State<KPIAndAward> {
     required String url,
   }) {
     return Card(
-      color: Theme.of(context).cardTheme.color,
       clipBehavior: Clip.antiAliasWithSaveLayer,
       elevation: 10,
       child: Padding(
@@ -98,7 +107,6 @@ class _KPIAndAwardState extends State<KPIAndAward> {
                           },
                           onProgress: (name, value) {
                             progress = value;
-                            setState(() {});
                           },
                         );
                       },

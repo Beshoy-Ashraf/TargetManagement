@@ -35,92 +35,127 @@ class DailyAtchievement extends StatelessWidget {
                 key: FormKey,
                 child: Column(
                   children: [
-                    defualtTextinput(
-                        controller: Point,
-                        Type: TextInputType.number,
-                        label: 'Total point',
-                        validate: (value) =>
-                            value!.isEmpty ? 'OC quantity is required' : null,
-                        password: false),
-                    SizedBox(
-                      height: 20,
+                    TextFormField(
+                      controller: Point,
+                      keyboardType: TextInputType.number,
+                      validator: (value) =>
+                          value!.isEmpty ? 'Point quantity is required' : null,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        labelText: 'Total point',
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
                     ),
-                    defualtTextinput(
-                        controller: GA,
-                        Type: TextInputType.number,
-                        label: 'Total GA',
-                        validate: (value) =>
-                            value!.isEmpty ? 'OC quantity is required' : null,
-                        password: false),
-                    SizedBox(
-                      height: 20,
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: GA,
+                      keyboardType: TextInputType.number,
+                      validator: (value) =>
+                          value!.isEmpty ? 'GA quantity is required' : null,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        labelText: 'Total GA',
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
                     ),
-                    defualtTextinput(
-                        controller: OC,
-                        Type: TextInputType.number,
-                        label: 'Total Orange Cash',
-                        validate: (value) =>
-                            value!.isEmpty ? 'OC quantity is required' : null,
-                        password: false),
-                    SizedBox(
-                      height: 20,
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: OC,
+                      keyboardType: TextInputType.number,
+                      validator: (value) =>
+                          value!.isEmpty ? 'OC quantity is required' : null,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        labelText: 'Total Orange Cash',
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
                     ),
-                    defualtTextinput(
-                        controller: DSL,
-                        Type: TextInputType.number,
-                        label: 'Total DSL',
-                        validate: (value) =>
-                            value!.isEmpty ? 'OC quantity is required' : null,
-                        password: false),
-                    SizedBox(
-                      height: 20,
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: DSL,
+                      keyboardType: TextInputType.number,
+                      validator: (value) =>
+                          value!.isEmpty ? 'DSL quantity is required' : null,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        labelText: 'Total DSL',
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
                     ),
-                    defualtTextinput(
-                        controller: HOME4G,
-                        Type: TextInputType.number,
-                        label: 'Total  Home 4G',
-                        validate: (value) =>
-                            value!.isEmpty ? 'OC quantity is required' : null,
-                        password: false),
-                    SizedBox(
-                      height: 20,
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: HOME4G,
+                      keyboardType: TextInputType.number,
+                      validator: (value) => value!.isEmpty
+                          ? 'Home 4G quantity is required'
+                          : null,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        labelText: 'Total Home 4G',
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
                     ),
-                    defualtTextinput(
-                        controller: Devices,
-                        Type: TextInputType.number,
-                        label: 'Total Devices',
-                        validate: (value) =>
-                            value!.isEmpty ? 'OC quantity is required' : null,
-                        password: false),
-                    SizedBox(
-                      height: 30,
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: Devices,
+                      keyboardType: TextInputType.number,
+                      validator: (value) => value!.isEmpty
+                          ? 'Devices quantity is required'
+                          : null,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        labelText: 'Total Devices',
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
                     ),
+                    SizedBox(height: 30),
                     Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
-                          color: Colors.orange[200],
-                          border: Border.all(color: Colors.orange, width: 1),
-                          borderRadius: BorderRadius.circular(15)),
+                        gradient: LinearGradient(
+                          colors: [Colors.orange[400]!, Colors.yellow[700]!],
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.orange.withOpacity(0.5),
+                            spreadRadius: 3,
+                            blurRadius: 8,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
                       child: MaterialButton(
                         onPressed: () async {
                           if (FormKey.currentState!.validate()) {
-                            // FromCubit.insertData(
-                            //     formatter.format(now),
-                            //     int.parse(Point.text),
-                            //     int.parse(GA.text),
-                            //     int.parse(OC.text),
-                            //     int.parse(DSL.text),
-                            //     int.parse(HOME4G.text),
-                            //     int.parse(Devices.text));
                             print(formatter.format(now));
                             FromCubit.setUserData(
-                                day: formatter.format(now),
-                                point: int.parse(Point.text),
-                                GA: int.parse(GA.text),
-                                oc: int.parse(OC.text),
-                                dsl: int.parse(DSL.text),
-                                home4g: int.parse(HOME4G.text),
-                                devices: int.parse(Devices.text));
+                              day: formatter.format(now),
+                              point: int.parse(Point.text),
+                              GA: int.parse(GA.text),
+                              oc: int.parse(OC.text),
+                              dsl: int.parse(DSL.text),
+                              home4g: int.parse(HOME4G.text),
+                              devices: int.parse(Devices.text),
+                            );
                             navigateAndFinish(context, HomeLayout());
                           } else {
                             print('Not Valid');
@@ -129,10 +164,13 @@ class DailyAtchievement extends StatelessWidget {
                         child: Text(
                           'Submit',
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

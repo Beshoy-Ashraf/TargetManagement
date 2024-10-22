@@ -78,6 +78,8 @@ class HomeLayout extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
+                      Appcubit.get(context).getknowladge();
+
                       navigateTo(context, knowledge());
                     },
                     child: Padding(
@@ -119,6 +121,7 @@ class HomeLayout extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
+                      Appcubit.get(context).getkpi();
                       navigateTo(context, KPIAndAward());
                     },
                     child: Padding(

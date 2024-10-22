@@ -9,8 +9,8 @@ class initialTarget {
   final int GAper;
   final int orangeCashper;
   final int adslper;
-  final int home4gper;
-  final int devicesper;
+  final double home4gper;
+  final double devicesper;
 
   initialTarget({
     required this.point,
@@ -55,8 +55,8 @@ class initialTarget {
       GAper: map['GAper'] ?? 0,
       orangeCashper: map['orangeCashper'] ?? 0,
       adslper: map['adslper'] ?? 0,
-      home4gper: map['home4gper'] ?? 0,
-      devicesper: map['devicesper'] ?? 0,
+      home4gper: map['home4gper'] ?? 0.0,
+      devicesper: map['devicesper'] ?? 0.0,
     );
   }
 }

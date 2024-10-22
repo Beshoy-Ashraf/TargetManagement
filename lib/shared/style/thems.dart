@@ -20,7 +20,6 @@ ThemeData darkTheme = ThemeData(
     ),
   ),
   scaffoldBackgroundColor: Colors.black,
-  cardTheme: CardTheme(color: Colors.black),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       type: BottomNavigationBarType.fixed,
       selectedItemColor: Colors.white,
@@ -59,7 +58,6 @@ ThemeData lightTheme = ThemeData(
       color: Colors.black,
     ),
   ),
-  cardTheme: CardTheme(color: Colors.white),
   scaffoldBackgroundColor: Colors.white,
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     type: BottomNavigationBarType.fixed,

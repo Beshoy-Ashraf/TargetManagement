@@ -1,52 +1,63 @@
 import 'dart:io';
 
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:target_manangment/layout/cubit/AppCubit.dart';
+import 'package:target_manangment/layout/cubit/AppStates.dart';
 
-class knowledge extends StatefulWidget {
-  const knowledge({super.key});
-
-  @override
-  State<knowledge> createState() => _knowledgeState();
-}
-
-class _knowledgeState extends State<knowledge> {
+class knowledge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double progress = 0;
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
-        child: Container(
-          width: double.infinity,
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.separated(
-                  itemBuilder: (context, index) {
-                    return itemBild(
-                        context: context,
-                        progress: progress,
-                        title: 'MNP ',
-                        subtitle:
-                            'when customer want to change his number to another operator',
-                        url:
-                            'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf');
-                  },
-                  separatorBuilder: (context, index) {
-                    return SizedBox(
-                      height: 10,
-                    );
-                  },
-                  itemCount: 5,
+    return BlocConsumer<Appcubit, AppStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Scaffold(
+          body: ConditionalBuilder(
+            condition: Appcubit.get(context).knowladge.isNotEmpty,
+            fallback: (context) => Center(child: CircularProgressIndicator()),
+            builder: (context) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
+                child: Container(
+                  width: double.infinity,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ListView.separated(
+                          itemBuilder: (context, index) {
+                            return itemBild(
+                                context: context,
+                                progress: progress,
+                                title: Appcubit.get(context)
+                                    .knowladge[index]
+                                    .title,
+                                subtitle: Appcubit.get(context)
+                                    .knowladge[index]
+                                    .description,
+                                url:
+                                    Appcubit.get(context).knowladge[index].pdf);
+                          },
+                          separatorBuilder: (context, index) {
+                            return SizedBox(
+                              height: 10,
+                            );
+                          },
+                          itemCount: Appcubit.get(context).knowladge.length,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              )
-            ],
+              );
+            },
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -102,7 +113,6 @@ class _knowledgeState extends State<knowledge> {
                           },
                           onProgress: (name, value) {
                             progress = value;
-                            setState(() {});
                           },
                         );
                       },
