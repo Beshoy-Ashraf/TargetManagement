@@ -4,9 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:target_manangment/layout/HomeLayout.dart';
 import 'package:target_manangment/layout/cubit/AppCubit.dart';
 import 'package:target_manangment/layout/cubit/AppStates.dart';
-import 'package:target_manangment/models/datamodel.dart';
 import 'package:target_manangment/shared/components/components.dart';
-import 'package:target_manangment/shared/constant/constant.dart';
 
 class DailyAtchievement extends StatelessWidget {
   const DailyAtchievement({super.key});
@@ -156,6 +154,7 @@ class DailyAtchievement extends StatelessWidget {
                               home4g: int.parse(HOME4G.text),
                               devices: int.parse(Devices.text),
                             );
+                            Appcubit.get(context).calculateTotalAchieve();
                             navigateAndFinish(context, HomeLayout());
                           } else {
                             print('Not Valid');

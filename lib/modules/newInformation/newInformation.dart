@@ -67,6 +67,7 @@ class NewInformation extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Container(
+                        height: 200,
                         width: double.infinity,
                         decoration: BoxDecoration(
                           border: Border.all(
@@ -84,14 +85,17 @@ class NewInformation extends StatelessWidget {
                           ],
                         ),
                         child: TextFormField(
+                          textDirection: TextDirection.rtl,
                           controller: description,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Description is required';
                             }
                           },
+                          maxLines: 10,
                           decoration: InputDecoration(
                             hintText: 'Description',
+                            hintTextDirection: TextDirection.rtl,
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.all(20),
                             prefixIcon: Icon(Icons.description,

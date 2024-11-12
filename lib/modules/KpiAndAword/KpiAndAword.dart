@@ -57,8 +57,7 @@ class KPI extends StatelessWidget {
                             hintText: 'Title',
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.all(20),
-                            prefixIcon: Icon(Icons.title,
-                                color: Colors.grey), // Added icon
+                            prefixIcon: Icon(Icons.title, color: Colors.grey),
                           ),
                         ),
                       ),
@@ -66,6 +65,7 @@ class KPI extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Container(
+                        height: 200,
                         width: double.infinity,
                         decoration: BoxDecoration(
                           border: Border.all(
@@ -83,18 +83,21 @@ class KPI extends StatelessWidget {
                           ],
                         ),
                         child: TextFormField(
+                          maxLines: 10,
                           controller: description,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Description is required';
                             }
                           },
+                          textDirection: TextDirection.rtl,
                           decoration: InputDecoration(
                             hintText: 'Description',
+                            hintTextDirection: TextDirection.rtl,
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.all(20),
-                            prefixIcon: Icon(Icons.description,
-                                color: Colors.grey), // Added icon
+                            prefixIcon:
+                                Icon(Icons.description, color: Colors.grey),
                           ),
                         ),
                       ),
@@ -121,8 +124,8 @@ class KPI extends StatelessWidget {
                                   ),
                                 ),
                                 style: TextButton.styleFrom(
-                                  backgroundColor: Color.fromARGB(
-                                      255, 245, 147, 0), // Button color
+                                  backgroundColor:
+                                      Color.fromARGB(255, 245, 147, 0),
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 30, vertical: 15),
                                   shape: RoundedRectangleBorder(

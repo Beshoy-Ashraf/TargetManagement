@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:target_manangment/layout/cubit/AppCubit.dart';
 import 'package:target_manangment/layout/cubit/AppStates.dart';
-import 'package:target_manangment/models/datamodel.dart';
 import 'package:target_manangment/modules/EditTarget/EditTarget.dart';
 import 'package:target_manangment/shared/components/components.dart';
 
@@ -94,6 +93,7 @@ class EditDay extends StatelessWidget {
                                 home4g: int.parse(HOME4G.text),
                                 devices: int.parse(Devices.text),
                               );
+                              Appcubit.get(context).calculateTotalAchieve();
                               navigateAndFinish(context, EditTarget());
                             } else {
                               print('Not Valid');

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:target_manangment/layout/cubit/AppCubit.dart';
 import 'package:target_manangment/layout/cubit/AppStates.dart';
-import 'package:target_manangment/models/datamodel.dart';
 import 'package:target_manangment/modules/EditTarget/EditDay.dart';
 import 'package:target_manangment/shared/components/components.dart';
 import 'package:target_manangment/shared/constant/constant.dart';

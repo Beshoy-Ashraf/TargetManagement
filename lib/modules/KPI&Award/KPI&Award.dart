@@ -87,6 +87,7 @@ class KPIAndAward extends StatelessWidget {
               ),
               Text(
                 subtitle,
+                textDirection: TextDirection.rtl,
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
               ),
               SizedBox(

@@ -6,95 +6,22 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:target_manangment/layout/cubit/AppStates.dart';
+import 'package:target_manangment/models/dashboard.dart';
 import 'package:target_manangment/models/datamodel.dart';
 import 'package:target_manangment/models/initialModel.dart';
 import 'package:target_manangment/models/knowladgemodel.dart';
 import 'package:target_manangment/models/total.dart';
 import 'package:target_manangment/shared/constant/constant.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:target_manangment/shared/network/local/shared_helper.dart';
 
 class Appcubit extends Cubit<AppStates> {
   Appcubit() : super(AppInitialState());
   static Appcubit get(context) => BlocProvider.of(context);
-
-  Future<Database> initializeDB() async {
-    return openDatabase(
-      join(await getDatabasesPath(), 'db.db'),
-      onCreate: (db, version) {
-        return db.execute(
-          '''
-        CREATE TABLE targets(
-          day TEXT PRIMARY KEY, 
-          point INTEGER, 
-          GA INTEGER,
-          orange_cash INTEGER, 
-          adsl INTEGER, 
-          home4g INTEGER, 
-          devices INTEGER
-        )
-        ''',
-        );
-      },
-      version: 1,
-    );
-  }
-
-  Future<void> insertData(String day, int point, int GA, int orangeCash,
-      int adsl, int home4g, int devices) async {
-    final Database db = await initializeDB();
-
-    await db.insert(
-      'targets',
-      {
-        'day': day,
-        'point': point,
-        'GA': GA,
-        'orange_cash': orangeCash,
-        'adsl': adsl,
-        'home4g': home4g,
-        'devices': devices,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
-  Future<List<Map<String, dynamic>>> retrieveData() async {
-    final Database db = await initializeDB();
-
-    return await db.query('targets');
-  }
-
-  Future<String> getDatabasePath() async {
-    return join(await getDatabasesPath(), 'db');
-  }
-
-  Future<void> deleteOldDatabase() async {
-    String dbPath = await getDatabasePath();
-    await deleteDatabase(dbPath);
-    print("Database deleted successfully.");
-  }
-
-  Future<void> updateData(String day, int point, int GA, int orangeCash,
-      int adsl, int home4g, int devices) async {
-    final Database db = await initializeDB();
-
-    await db.update(
-      'targets',
-      {
-        'point': point,
-        'GA': GA,
-        'orange_cash': orangeCash,
-        'adsl': adsl,
-        'home4g': home4g,
-        'devices': devices,
-      },
-      where: "day = ?",
-      whereArgs: [day],
-    );
-  }
 
 /////////////////////////////////////////////////firebase////////////////////////////////////////////
   void setUserData({
@@ -506,33 +433,27 @@ class Appcubit extends Cubit<AppStates> {
   String? pdfurl;
 
   Future<void> uploadPDF() async {
-    // Step 1: Pick the file
-
     if (result != null) {
-      // Step 2: Get the file and create a Firebase reference
       File file = File(result!.files.single.path!);
+
       FirebaseStorage storage = FirebaseStorage.instance;
+
       Reference ref =
           storage.ref().child('uploads/${result!.files.single.name}');
 
-      // Step 3: Upload the file
       UploadTask uploadTask = ref.putFile(file);
 
-      // Step 4: Monitor the upload progress
       uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
         double progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         print('Upload is $progress% complete.');
       });
-
-      // Step 5: Get the download URL once the upload is complete
       await uploadTask.whenComplete(() async {
         String downloadURL = await ref.getDownloadURL();
         pdfurl = downloadURL;
         print('File uploaded. Download URL: $downloadURL');
       });
     } else {
-      // User canceled the picker
       print('No file selected.');
     }
   }
@@ -601,5 +522,215 @@ class Appcubit extends Cubit<AppStates> {
       print(error);
       emit(GetkpiError());
     });
+  }
+
+  void calculateTotalAchieve() async {
+    try {
+      await getInitTarget(userId);
+      await getTotalachievement(userId);
+      totlalAchieve(total!, InitTarget!);
+    } catch (error) {
+      print('Error calculating total points: $error');
+    }
+  }
+
+  void totlalAchieve(Total t, initialTarget initAch) async {
+    int totalPoints = t.point;
+    int totalGA = t.GA;
+    int totalOC = t.orangeCash;
+    int totalHome4G = t.home4g;
+    int totalDevices = t.devices;
+    int totalDsl = t.adsl;
+    int pointKpi = initAch.pointper;
+    int OCKpi = initAch.orangeCashper;
+    int DSLKpi = initAch.adslper;
+    int GAKpi = initAch.GAper;
+    double DevicesKpi = initAch.devicesper;
+    double Home4GKpi = initAch.home4gper;
+    int point = initAch.point;
+    int GA = initAch.GA;
+    int OC = initAch.orangeCash;
+    int DSL = initAch.adsl;
+    int Home4G = initAch.home4g;
+    int Devices = initAch.devices;
+    int pointper = 0;
+    int GAper = 0;
+    int OCper = 0;
+    int DSLper = 0;
+    int Home4Gper = 0;
+    int Devicesper = 0;
+    pointper = (point != 0) ? ((totalPoints * 100 / point).toInt()) : 0;
+    pointKpi = (pointper * pointKpi / 100).toInt();
+    GAper = (GA != 0) ? ((totalGA * 100 / GA).toInt()) : 0;
+    OCper = (OC != 0) ? ((totalOC * 100 / OC).toInt()) : 0;
+    OCKpi = (OCper * OCKpi / 100).toInt();
+    DSLper = (DSL != 0)
+        ? ((totalDsl * 100 / DSL).toInt())
+        : (totalDsl * 100).toInt();
+    DSLKpi = (GA != 0) ? (DSLper * DSLKpi / 100).toInt() : 0;
+    Devicesper = (Devices != 0) ? ((totalDevices * 100 / Devices).toInt()) : 0;
+    DevicesKpi = (Devicesper * DevicesKpi / 100).toInt() > 5
+        ? 5
+        : (Devicesper * DevicesKpi / 100);
+    Home4Gper = (Home4G != 0) ? ((totalHome4G * 100 / Home4G).toInt()) : 0;
+    Home4GKpi = (Home4Gper * Home4GKpi / 100).toDouble();
+    double totalKpi = pointKpi + OCKpi + DSLKpi + DevicesKpi + Home4GKpi;
+    settotal(
+        totalPoints: totalPoints,
+        totalGA: totalGA,
+        totalOC: totalOC,
+        totalHome4G: totalHome4G,
+        totalDsl: totalDsl,
+        totalDevices: totalDevices,
+        pointKpi: pointKpi,
+        GAKpi: GAKpi,
+        OCKpi: OCKpi,
+        Home4GKpi: Home4GKpi.toInt(),
+        DevicesKpi: DevicesKpi.toInt(),
+        DSLKpi: DSLKpi,
+        point: point,
+        GA: GA,
+        OC: OC,
+        Home4G: Home4G,
+        Devices: Devices,
+        DSL: DSL,
+        pointper: pointper,
+        GAper: GAper,
+        OCper: OCper,
+        Home4Gper: Home4Gper,
+        Devicesper: Devicesper,
+        DSLper: DSLper,
+        totalKpi: totalKpi);
+  }
+
+  void settotal({
+    required int totalPoints,
+    required int totalGA,
+    required int totalOC,
+    required int totalHome4G,
+    required int totalDsl,
+    required int totalDevices,
+    required int pointKpi,
+    required int GAKpi,
+    required int OCKpi,
+    required int Home4GKpi,
+    required int DevicesKpi,
+    required int DSLKpi,
+    required int point,
+    required int GA,
+    required int OC,
+    required int Home4G,
+    required int Devices,
+    required int DSL,
+    required int pointper,
+    required int GAper,
+    required int OCper,
+    required int Home4Gper,
+    required int Devicesper,
+    required int DSLper,
+    required double totalKpi,
+  }) {
+    DashBoard total = DashBoard(
+      totalPoints: totalPoints,
+      totalGA: totalGA,
+      totalOC: totalOC,
+      totalHome4G: totalHome4G,
+      totalDsl: totalDsl,
+      totalDevices: totalDevices,
+      pointKpi: pointKpi,
+      GAKpi: GAKpi,
+      OCKpi: OCKpi,
+      Home4GKpi: Home4GKpi,
+      DevicesKpi: DevicesKpi,
+      DSLKpi: DSLKpi,
+      point: point,
+      GA: GA,
+      OC: OC,
+      Home4G: Home4G,
+      Devices: Devices,
+      DSL: DSL,
+      pointper: pointper,
+      GAper: GAper,
+      OCper: OCper,
+      Home4Gper: Home4Gper,
+      Devicesper: Devicesper,
+      DSLper: DSLper,
+      totalKpi: totalKpi.toInt(),
+    );
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('dashboard')
+        .doc('basicinfo')
+        .set(total.toMap())
+        .then((value) {
+      print('done');
+      emit(SetDataSuccessful());
+    }).catchError((error) {
+      emit(SetDataError());
+    });
+  }
+
+  Future<void> clearCollection(String collectionPath) async {
+    CollectionReference collectionRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection(collectionPath);
+
+    QuerySnapshot snapshot = await collectionRef.get();
+
+    for (DocumentSnapshot document in snapshot.docs) {
+      await document.reference.delete();
+    }
+  }
+
+  String lastDay() {
+    DateTime now = DateTime.now();
+
+    DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+
+    DateFormat formatter = DateFormat('d');
+    String formatted = formatter.format(lastDayOfMonth);
+
+    return formatted;
+  }
+
+  void clear() {
+    DateTime now = DateTime.now();
+    DateFormat formatter = DateFormat('d');
+    DateFormat month = DateFormat('MMMM');
+    String monthname = month.format(now);
+
+    String formatted = formatter.format(now);
+    if (formatted == '1') {
+      if (CashHelper.getData(key: monthname) == 1) {
+        return;
+      }
+      CashHelper.saveData(key: monthname, value: 1);
+      clearCollection("target").then((_) {
+        print("Collection cleared!");
+      }).catchError((error) {
+        print("Error clearing collection: $error");
+      });
+      setInatioalTarget(
+          point: 0,
+          pointper: 0,
+          GA: 0,
+          GAper: 0,
+          oc: 0,
+          ocper: 0,
+          dsl: 0,
+          dslper: 0,
+          home4g: 0,
+          home4gper: 0,
+          devices: 0,
+          devicesper: 0);
+      getTotalachievement(userId);
+      calculateAchie(userId);
+      calculateTotalAchieve();
+      calculateTotaltotal(userId);
+    } else {
+      print("Not the last day of the month");
+    }
   }
 }

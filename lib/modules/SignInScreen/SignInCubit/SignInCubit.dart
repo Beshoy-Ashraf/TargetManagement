@@ -52,7 +52,6 @@ class SignInCubit extends Cubit<SignInStates> {
           'https://scontent.faly2-2.fna.fbcdn.net/v/t39.30808-6/420444035_3222448044566552_5734659718070535202_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=bJwQXTIdqxIQ7kNvgG_FGa9&_nc_ht=scontent.faly2-2.fna&oh=00_AYDRTu2h3Pn8uChIaTCBATQ55sPXedv0lnUFWyub3kZVvw&oe=669D6B28',
       cover:
           'https://scontent.faly2-2.fna.fbcdn.net/v/t39.30808-6/240078414_1036938353778426_6951240705318728582_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=1QX8CG_d_aIQ7kNvgFDlPAZ&_nc_ht=scontent.faly2-2.fna&oh=00_AYD63rf7G_8wyeFta3n7IrnsiDpcUk_1w3BPNP4jUlCnWw&oe=669D5423',
-      bio: 'write your bio',
     );
     FirebaseFirestore.instance
         .collection('users')

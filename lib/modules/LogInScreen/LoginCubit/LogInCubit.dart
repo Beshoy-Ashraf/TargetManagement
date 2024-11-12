@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:target_manangment/layout/HomeLayout.dart';
 import 'package:target_manangment/modules/LogInScreen/LoginCubit/LogInStates.dart';
 import 'package:target_manangment/shared/components/components.dart';
+import 'package:target_manangment/shared/constant/constant.dart';
 import 'package:target_manangment/shared/network/local/shared_helper.dart';
 
 class LoginCubit extends Cubit<LoginState> {
@@ -18,6 +19,12 @@ class LoginCubit extends Cubit<LoginState> {
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
       CashHelper.saveData(key: 'userId', value: value.user!.uid);
+      userId = CashHelper.getData(key: 'userId');
+      if (email == 'bishoy.ashraf.a046@gmail.com') {
+        CashHelper.saveData(key: 'isAdmin', value: true);
+      } else {
+        CashHelper.saveData(key: 'isAdmin', value: false);
+      }
       navigateAndFinish(context, HomeLayout());
       emit(LoginSuccessState());
     }).catchError((error) {

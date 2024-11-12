@@ -22,7 +22,7 @@ class SignIn extends StatelessWidget {
         child: BlocConsumer<SignInCubit, SignInStates>(
           listener: (context, state) {
             if (state is SignInSucessful) {
-              navigateAndFinish(context, const HomeLayout());
+              navigateAndFinish(context, const SignIn());
             }
           },
           builder: (context, state) {

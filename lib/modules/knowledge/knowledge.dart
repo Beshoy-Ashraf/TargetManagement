@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
-import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 import 'package:target_manangment/layout/cubit/AppCubit.dart';
 import 'package:target_manangment/layout/cubit/AppStates.dart';
 
@@ -91,8 +87,12 @@ class knowledge extends StatelessWidget {
                   ],
                 ),
               ),
+              SizedBox(
+                height: 10,
+              ),
               Text(
                 subtitle,
+                textDirection: TextDirection.rtl,
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
               ),
               SizedBox(
@@ -134,7 +134,7 @@ class knowledge extends StatelessWidget {
                                   width: 10,
                                 ),
                                 Text(
-                                  '${title} contract',
+                                  'pdf',
                                   style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w700),

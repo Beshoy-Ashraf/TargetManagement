@@ -30,14 +30,24 @@ class HomeLayout extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () async {
-                      await FromCubit.getInitTarget(userId);
-                      await FromCubit.getTotalachievement(userId);
-                      navigateTo(
-                          context,
-                          Achievement(
-                            initAch: FromCubit.InitTarget!,
-                            t: FromCubit.total!,
-                          ));
+                      try {
+                        print(userId);
+                        FromCubit.clear();
+                        await FromCubit.getInitTarget(userId);
+                        await FromCubit.getTotalachievement(userId);
+
+                        navigateTo(
+                            context,
+                            Achievement(
+                              initAch: FromCubit.InitTarget!,
+                              t: FromCubit.total!,
+                            ));
+                      } catch (e) {
+                        showtoast(
+                            msg:
+                                'set initial target first,second enter your daily achievement',
+                            state: ToastStates.ERROR);
+                      }
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
@@ -163,6 +173,7 @@ class HomeLayout extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
+                      FromCubit.clear();
                       navigateTo(context, DailyAtchievement());
                     },
                     child: Padding(
@@ -204,6 +215,7 @@ class HomeLayout extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
+                      FromCubit.clear();
                       navigateTo(context, Setting());
                     },
                     child: Padding(

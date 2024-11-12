@@ -1,9 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:target_manangment/layout/cubit/AppCubit.dart';
 import 'package:target_manangment/layout/cubit/AppStates.dart';
 import 'package:target_manangment/models/initialModel.dart';
@@ -16,7 +12,6 @@ class Achievement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int value = 70;
     int totalPoints = t.point;
     int totalGA = t.GA;
     int totalOC = t.orangeCash;
