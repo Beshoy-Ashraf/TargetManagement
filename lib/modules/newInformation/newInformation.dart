@@ -15,6 +15,7 @@ class NewInformation extends StatelessWidget {
     var title = TextEditingController();
     var description = TextEditingController();
     var FormKey = GlobalKey<FormState>();
+    var typecontroller = TextEditingController();
     return BlocConsumer<Appcubit, AppStates>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -151,6 +152,21 @@ class NewInformation extends StatelessWidget {
                       ),
                     ),
                     Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10.0),
+                      child: TextFormField(
+                        controller: typecontroller,
+                        onChanged: (value) {
+                          print(value);
+                          typecontroller.text = value;
+                        },
+                        decoration: InputDecoration(
+                          hintText: 'type',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                    Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Container(
                         width: double.infinity,
@@ -176,6 +192,7 @@ class NewInformation extends StatelessWidget {
                               Appcubit.get(context).addinformation(
                                 title: title.text,
                                 description: description.text,
+                                type: typecontroller.text,
                               );
                               navigateAndFinish(context, HomeLayout());
                             }

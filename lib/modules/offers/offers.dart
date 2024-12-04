@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:target_manangment/shared/constant/constant.dart';
 
-class KPIListScreen extends StatelessWidget {
+class OfferListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('KPI')
+            .collection('offers')
             .orderBy('createdAt', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
@@ -17,20 +17,20 @@ class KPIListScreen extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No KPIs available.'));
+            return Center(child: Text('No offers available.'));
           } else {
             // Extract data from Firestore
-            var KPIs = snapshot.data!.docs;
+            var offers = snapshot.data!.docs;
 
             return ListView.builder(
-              itemCount: KPIs.length,
+              itemCount: offers.length,
               itemBuilder: (context, index) {
-                var KPI = KPIs[index].data() as Map<String, dynamic>;
-                return buildKPIItem(
+                var offer = offers[index].data() as Map<String, dynamic>;
+                return buildOfferItem(
                   context: context,
-                  title: KPI['title'],
-                  description: KPI['description'],
-                  images: List<String>.from(KPI['images']),
+                  title: offer['title'],
+                  description: offer['description'],
+                  images: List<String>.from(offer['images']),
                 );
               },
             );
@@ -40,7 +40,7 @@ class KPIListScreen extends StatelessWidget {
     );
   }
 
-  Widget buildKPIItem({
+  Widget buildOfferItem({
     required BuildContext context,
     required String title,
     required String description,

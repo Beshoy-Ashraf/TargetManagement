@@ -4,12 +4,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class KPI extends StatefulWidget {
+class instructions extends StatefulWidget {
   @override
-  _KPIState createState() => _KPIState();
+  _instructionsState createState() => _instructionsState();
 }
 
-class _KPIState extends State<KPI> {
+class _instructionsState extends State<instructions> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   List<File> _imageFiles = [];
@@ -31,7 +31,7 @@ class _KPIState extends State<KPI> {
       try {
         String fileName = DateTime.now().millisecondsSinceEpoch.toString();
         Reference storageRef =
-            FirebaseStorage.instance.ref().child('s/$fileName');
+            FirebaseStorage.instance.ref().child('instructions/$fileName');
         UploadTask uploadTask = storageRef.putFile(image);
         TaskSnapshot taskSnapshot = await uploadTask;
         String imageUrl = await taskSnapshot.ref.getDownloadURL();
@@ -43,7 +43,7 @@ class _KPIState extends State<KPI> {
     return imageUrls;
   }
 
-  Future<void> _submit() async {
+  Future<void> _submitinstruction() async {
     String title = _titleController.text;
     String description = _descriptionController.text;
 
@@ -59,20 +59,20 @@ class _KPIState extends State<KPI> {
 
     // تخزين البيانات في Firebase Firestore
     try {
-      await FirebaseFirestore.instance.collection('KPI').add({
+      await FirebaseFirestore.instance.collection('instructions').add({
         'title': title,
         'description': description,
         'images': imageUrls,
         'createdAt': Timestamp.now(),
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(' added successfully')),
+        SnackBar(content: Text('instruction added successfully')),
       );
       Navigator.pop(context); // العودة بعد نشر العرض
     } catch (e) {
-      print('Failed to add : $e');
+      print('Failed to add instruction: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to add ')),
+        SnackBar(content: Text('Failed to add instruction')),
       );
     }
   }
@@ -80,8 +80,11 @@ class _KPIState extends State<KPI> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Add instruction'),
+      ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+        padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,8 +133,8 @@ class _KPIState extends State<KPI> {
                 ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _submit,
-                child: Text('Submit'),
+                onPressed: _submitinstruction,
+                child: Text('Submit instruction'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepOrange,
                 ),

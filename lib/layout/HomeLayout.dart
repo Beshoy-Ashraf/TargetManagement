@@ -1,17 +1,72 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:target_manangment/layout/cubit/AppCubit.dart';
 import 'package:target_manangment/layout/cubit/AppStates.dart';
 import 'package:target_manangment/modules/Achievement/Achievement.dart';
 import 'package:target_manangment/modules/DailyAtchievement/dailyAchievement.dart';
-import 'package:target_manangment/modules/KPI&Award/KPI&Award.dart';
-import 'package:target_manangment/modules/Setting/Setting.dart';
-import 'package:target_manangment/modules/knowledge/knowledge.dart';
+import 'package:target_manangment/modules/LogInScreen/LogInScreen.dart';
+import 'package:target_manangment/modules/quiz/quiz.dart';
 import 'package:target_manangment/shared/components/components.dart';
-import 'package:airtable_icons/airtable_icons.dart';
+import 'package:target_manangment/modules/Setting/Setting.dart';
 import 'package:target_manangment/shared/constant/constant.dart';
+import 'package:target_manangment/shared/network/local/shared_helper.dart';
+import 'package:flutter/material.dart';
+
+class CustomBottomNavigationBar extends StatelessWidget {
+  final int currentIndex;
+  final Function(int) onTap;
+
+  const CustomBottomNavigationBar({
+    Key? key,
+    required this.currentIndex,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: c,
+          borderRadius: BorderRadius.circular(20.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 5,
+              blurRadius: 15,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.emoji_events),
+              label: 'Achievement',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+          ],
+          currentIndex: currentIndex,
+          selectedItemColor: const Color.fromARGB(255, 0, 0, 0),
+          unselectedItemColor: Colors.white.withOpacity(0.5),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          onTap: onTap,
+          type: BottomNavigationBarType.fixed,
+        ),
+      ),
+    );
+  }
+}
 
 class HomeLayout extends StatelessWidget {
   const HomeLayout({super.key});
@@ -21,267 +76,15 @@ class HomeLayout extends StatelessWidget {
     return BlocConsumer<Appcubit, AppStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        var FromCubit = Appcubit.get(context);
+        var fromCubit = Appcubit.get(context);
         return Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.only(top: 50),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  InkWell(
-                    onTap: () async {
-                      try {
-                        print(userId);
-                        FromCubit.clear();
-                        await FromCubit.getInitTarget(userId);
-                        await FromCubit.getTotalachievement(userId);
-
-                        navigateTo(
-                            context,
-                            Achievement(
-                              initAch: FromCubit.InitTarget!,
-                              t: FromCubit.total!,
-                            ));
-                      } catch (e) {
-                        showtoast(
-                            msg:
-                                'set initial target first,second enter your daily achievement',
-                            state: ToastStates.ERROR);
-                      }
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Container(
-                        height: 150,
-                        child: Card(
-                          color: Theme.of(context).cardTheme.color,
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          elevation: 10,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Container(
-                              width: double.infinity,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.auto_graph,
-                                    size: 50,
-                                    color: Colors.orange[900],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    'Achievement',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Appcubit.get(context).getknowladge();
-
-                      navigateTo(context, knowledge());
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Container(
-                        height: 150,
-                        child: Card(
-                          color: Theme.of(context).cardTheme.color,
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          elevation: 10,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Container(
-                              width: double.infinity,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  AirtableIcon(
-                                    AirtableIcons.lookup,
-                                    size: 50,
-                                    color: Colors.orange[900],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    'Knowledge',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Appcubit.get(context).getkpi();
-                      navigateTo(context, KPIAndAward());
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Container(
-                        height: 150,
-                        child: Card(
-                          color: Theme.of(context).cardTheme.color,
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          elevation: 10,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Container(
-                              width: double.infinity,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  AirtableIcon(
-                                    AirtableIcons.gift,
-                                    size: 50,
-                                    color: Colors.orange[900],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    'KPI & Award',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      FromCubit.clear();
-                      navigateTo(context, DailyAtchievement());
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Container(
-                        height: 150,
-                        child: Card(
-                          color: Theme.of(context).cardTheme.color,
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          elevation: 10,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Container(
-                              width: double.infinity,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.edit_note,
-                                    size: 50,
-                                    color: Colors.orange[900],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    'daily atchivement',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      FromCubit.clear();
-                      navigateTo(context, Setting());
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Container(
-                        height: 150,
-                        child: Card(
-                          color: Theme.of(context).cardTheme.color,
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          elevation: 10,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Container(
-                              width: double.infinity,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  AirtableIcon(
-                                    AirtableIcons.settings,
-                                    size: 50,
-                                    color: Colors.orange[900],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    'Settings',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          body: fromCubit.screens[fromCubit.currentIndex],
+          bottomNavigationBar: CustomBottomNavigationBar(
+            currentIndex: fromCubit.currentIndex,
+            onTap: (index) {
+              fromCubit.changeIndex(index);
+            },
           ),
-          // body: FromCubit.body[FromCubit.CurrentIndex],
-          // bottomNavigationBar: BottomNavigationBar(
-          //   selectedItemColor: Colors.orange[900],
-          //   elevation: 5.0,
-          //   currentIndex: FromCubit.CurrentIndex,
-          //   onTap: (value) {
-          //     FromCubit.IndexChange(value);
-          //   },
-          //   type: BottomNavigationBarType.fixed,
-          //   items: [
-          //     BottomNavigationBarItem(
-          //       icon: Icon(Icons.auto_graph),
-          //       label: 'Achievement',
-          //     ),
-          //     BottomNavigationBarItem(
-          //         icon: AirtableIcon(AirtableIcons.text), label: 'Knowledge'),
-          //     BottomNavigationBarItem(
-          //         icon: AirtableIcon(AirtableIcons.gift), label: 'KPIAndAward'),
-          //     BottomNavigationBarItem(
-          //         icon: AirtableIcon(AirtableIcons.settings),
-          //         label: 'Settings'),
-          //   ],
-          // ),
         );
       },
     );

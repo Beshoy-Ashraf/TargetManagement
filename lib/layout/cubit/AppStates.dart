@@ -6,6 +6,8 @@ class IndexChangeState extends AppStates {}
 
 class SetDataSuccessful extends AppStates {}
 
+class ChangeIndexState extends AppStates {}
+
 class SetDataError extends AppStates {}
 
 class GetDataSuccessful extends AppStates {}

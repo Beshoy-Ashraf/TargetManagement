@@ -6,6 +6,7 @@ import 'package:target_manangment/modules/LogInScreen/LoginCubit/LogInCubit.dart
 import 'package:target_manangment/modules/LogInScreen/LoginCubit/LogInStates.dart';
 import 'package:target_manangment/modules/SignInScreen/SignInScreen.dart';
 import 'package:target_manangment/shared/components/components.dart';
+import 'package:target_manangment/shared/constant/constant.dart';
 
 class Login extends StatelessWidget {
   const Login({super.key});
@@ -42,16 +43,6 @@ class Login extends StatelessWidget {
                                 .headlineLarge
                                 ?.copyWith(
                                   color: Colors.black,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                          ),
-                          Text(
-                            'login now to enjoy with our offers',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                  color: Colors.grey,
                                   fontWeight: FontWeight.w700,
                                 ),
                           ),
@@ -117,7 +108,10 @@ class Login extends StatelessWidget {
                                   onPressed: () {
                                     navigateAndFinish(context, SignIn());
                                   },
-                                  child: Text('Register')),
+                                  child: Text('Register',
+                                      style: TextStyle(
+                                        color: c,
+                                      ))),
                             ],
                           ),
                         ],

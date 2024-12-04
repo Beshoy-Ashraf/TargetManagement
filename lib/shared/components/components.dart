@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:target_manangment/shared/constant/constant.dart';
 
 Widget articalItemsSperator() {
   return Padding(
@@ -67,10 +68,11 @@ PreferredSizeWidget defualtAppbar({
       title: Text(title!),
       actions: action,
     );
-Widget defualtButton({required String text, required Function()? onPressed}) =>
+Widget defualtButton(
+        {required String text, required Function()? onPressed, Color? color}) =>
     Container(
       width: double.infinity,
-      color: Colors.blue,
+      color: color ?? c,
       child: MaterialButton(
         onPressed: onPressed,
         child: Text(

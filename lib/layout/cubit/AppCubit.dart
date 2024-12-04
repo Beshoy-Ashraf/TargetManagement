@@ -3,18 +3,22 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:target_manangment/layout/cubit/AppStates.dart';
 import 'package:target_manangment/models/dashboard.dart';
 import 'package:target_manangment/models/datamodel.dart';
 import 'package:target_manangment/models/initialModel.dart';
 import 'package:target_manangment/models/knowladgemodel.dart';
+import 'package:target_manangment/models/profiledata.dart';
 import 'package:target_manangment/models/total.dart';
+import 'package:target_manangment/modules/Achievement/Targetpage.dart';
+import 'package:target_manangment/modules/Home/Home.dart';
+import 'package:target_manangment/modules/KPI&Award/KPI&Award.dart';
+import 'package:target_manangment/modules/Setting/Setting.dart';
+import 'package:target_manangment/modules/knowledge/knowledgelist.dart';
+import 'package:target_manangment/modules/offers/offers.dart';
 import 'package:target_manangment/shared/constant/constant.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:target_manangment/shared/network/local/shared_helper.dart';
@@ -23,7 +27,26 @@ class Appcubit extends Cubit<AppStates> {
   Appcubit() : super(AppInitialState());
   static Appcubit get(context) => BlocProvider.of(context);
 
+  int currentIndex = 0;
+  List<Widget> screens = [
+    HomeScreen(),
+    Targetpage(),
+    Setting(),
+  ];
+
+  void changeIndex(int index) {
+    currentIndex = index;
+    emit(ChangeIndexState());
+  }
+
+  bool knowledge = true;
+  void changepage(bool k) {
+    knowledge = k;
+    emit(ChangeIndexState());
+  }
+
 /////////////////////////////////////////////////firebase////////////////////////////////////////////
+
   void setUserData({
     required String day,
     required int point,
@@ -247,6 +270,35 @@ class Appcubit extends Cubit<AppStates> {
     }
   }
 
+  ProfileData? profileData;
+  Future<void> getprofiledata(String userId) async {
+    try {
+      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      if (documentSnapshot.exists) {
+        Map<String, dynamic>? data =
+            documentSnapshot.data() as Map<String, dynamic>?;
+
+        if (data != null) {
+          profileData = ProfileData.fromJson(data);
+          print(profileData!.username);
+
+          emit(GetDataSuccessful());
+        } else {
+          emit(NoDataFound());
+        }
+      } else {
+        emit(NoDataFound());
+      }
+    } catch (error) {
+      print('Error getting target data for day: $error');
+      emit(GetDataError());
+    }
+  }
+
   Total? total;
   Future<void> getTotalachievement(String userId) async {
     try {
@@ -274,6 +326,56 @@ class Appcubit extends Cubit<AppStates> {
     } catch (error) {
       print('Error getting target data for day: $error');
       emit(GetDataError());
+    }
+  }
+
+  DashBoard? dashBoard;
+
+  Future<void> getdashboard(String userId) async {
+    try {
+      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('dashboard')
+          .doc('basicinfo')
+          .get();
+
+      if (documentSnapshot.exists) {
+        Map<String, dynamic>? data =
+            documentSnapshot.data() as Map<String, dynamic>?;
+
+        if (data != null) {
+          dashBoard = DashBoard.fromMap(data);
+
+          emit(GetDataSuccessful());
+        } else {
+          emit(NoDataFound());
+        }
+      } else {
+        emit(NoDataFound());
+      }
+    } catch (error) {
+      print('Error getting target data for day: $error');
+      emit(GetDataError());
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getAllScores() async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('quiz_scores')
+          .orderBy('score', descending: true)
+          .get();
+
+      return querySnapshot.docs.map((doc) {
+        return {
+          'name': doc['name'],
+          'score': doc['score'],
+        };
+      }).toList();
+    } catch (e) {
+      print('Error fetching all scores: $e');
+      return [];
     }
   }
 
@@ -461,18 +563,29 @@ class Appcubit extends Cubit<AppStates> {
   void addinformation({
     required String title,
     required String description,
+    required String type,
   }) async {
     try {
       await uploadPDF();
+      if (title.isEmpty || description.isEmpty || type.isEmpty) {
+        throw Exception("All fields must be filled.");
+      }
 
-      await FirebaseFirestore.instance.collection('information').add({
+      await FirebaseFirestore.instance
+          .collection('information')
+          .doc(type)
+          .collection(type)
+          .add({
         'title': title,
         'description': description,
         'pdf': await pdfurl,
+        'type': type,
       });
+
       emit(AddInformationSuccessful());
     } catch (error) {
-      print('Error adding information: $error');
+      // Log the error for better debugging
+      print('Error adding knowledge: $error');
       emit(AddInformationError());
     }
   }
@@ -497,9 +610,14 @@ class Appcubit extends Cubit<AppStates> {
   }
 
   List<Knowladgemodel> knowladge = [];
-  void getknowladge() {
+  void getknowladge({required String type}) {
     knowladge = [];
-    FirebaseFirestore.instance.collection('information').get().then((value) {
+    FirebaseFirestore.instance
+        .collection('information')
+        .doc(type)
+        .collection(type)
+        .get()
+        .then((value) {
       value.docs.forEach((element) {
         knowladge.add(Knowladgemodel.fromMap(element.data()));
       });
@@ -732,5 +850,128 @@ class Appcubit extends Cubit<AppStates> {
     } else {
       print("Not the last day of the month");
     }
+  }
+
+  void addKnowledge({
+    required String type,
+    required String title,
+    required String description,
+    required String pdf,
+  }) async {
+    try {
+      if (title.isEmpty || description.isEmpty || pdf.isEmpty || type.isEmpty) {
+        throw Exception("All fields must be filled.");
+      }
+
+      await FirebaseFirestore.instance
+          .collection('information')
+          .doc(type)
+          .collection(type)
+          .add({
+        'title': title,
+        'description': description,
+        'pdf': pdf,
+        'type': type,
+      });
+
+      emit(AddInformationSuccessful());
+    } catch (error) {
+      // Log the error for better debugging
+      print('Error adding knowledge: $error');
+      emit(AddInformationError());
+    }
+  }
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+  Future<void> addOffer({
+    required String title,
+    required String description,
+    required String imagePath,
+  }) async {
+    try {
+      // رفع الصورة إلى Firebase Storage
+      final ref = _storage
+          .ref()
+          .child('offers/${DateTime.now().millisecondsSinceEpoch}.jpg');
+      await ref.putFile(imagePath as File);
+      final imageUrl = await ref.getDownloadURL();
+
+      // إضافة العرض إلى Firestore
+      await _firestore.collection('offers').add({
+        'title': title,
+        'description': description,
+        'imageUrl': imageUrl,
+      });
+    } catch (e) {
+      print('Error adding offer: $e');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getOffers() async {
+    try {
+      QuerySnapshot snapshot = await _firestore.collection('offers').get();
+      return snapshot.docs.map((doc) {
+        return {
+          'title': doc['title'],
+          'description': doc['description'],
+          'imageUrl': doc['imageUrl'],
+        };
+      }).toList();
+    } catch (e) {
+      print('Error fetching offers: $e');
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getinstructions() async {
+    try {
+      QuerySnapshot snapshot =
+          await _firestore.collection('instructions').get();
+      return snapshot.docs.map((doc) {
+        return {
+          'title': doc['title'],
+          'description': doc['description'],
+          'imageUrl': doc['imageUrl'],
+        };
+      }).toList();
+    } catch (e) {
+      print('Error fetching instructions: $e');
+      return [];
+    }
+  }
+
+  Future<List<String>> getAllOfferImages() async {
+    List<String> allImages = [];
+
+    try {
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('instructions').get();
+
+      for (var doc in snapshot.docs) {
+        // Ensure the 'images' field exists and is a list
+        if (doc.data() != null &&
+            (doc.data() as Map<String, dynamic>).containsKey('images')) {
+          List<dynamic> images = (doc.data() as Map<String, dynamic>)['images'];
+          allImages.addAll(List<String>.from(images)); // Add to allImages
+        }
+      }
+    } catch (e) {
+      print('Error fetching instructions images: $e');
+    }
+    return allImages;
+  }
+
+  Future<bool> checkQuizAccess(String userId) async {
+    final userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    return userDoc.data()?['quizAccess'] ?? true;
+  }
+
+  Future<void> blockQuizAccess(String userId) async {
+    await FirebaseFirestore.instance.collection('users').doc(userId).set(
+      {'quizAccess': false},
+      SetOptions(merge: true),
+    );
   }
 }
